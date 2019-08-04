@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+                font-family: sans-serif;
+            }
+
+            .movies {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                flex-flow: wrap;
+                justify-content: flex-start;
+                align-content: end;
+            }
+
+            .movies > .item {
+                bottom: 0;
+                background: #00000070;
+                text-align: center;
+                color: #ffffff;
+                position: relative;
+                margin: 4px;
+            }
+
+            .movies > .item > span.top {
+                top: 0;
+                right: 0;
+                position: absolute;
+                font-weight: bold;
+                color: red;
+                margin: 4px;
+            }
+
+            .movies > .item > span.bottom {
+                bottom: 0;
+                left: 0;
+                position: absolute;
+                background: #0000004f;
+                width: 100%;
+            }
+
+            .movies > .item > img {
+                position: initial;
+            }
+    </style>
+</head>
+<body>
+    <div class="movies"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyAbIFnVTkPbtxK8e-0P327q5JfS_Wc1rdU",
+            authDomain: "test-project-71f18.firebaseapp.com",
+            databaseURL: "https://test-project-71f18.firebaseio.com",
+            projectId: "test-project-71f18",
+            storageBucket: "test-project-71f18.appspot.com",
+            messagingSenderId: "597195214361"
+        };
+        firebase.initializeApp(config);
+
+        const db = firebase.firestore();
+        const moviesDiv = document.querySelector('div.movies');
+
+        db.collection('movies').onSnapshot(moviesRef => {
+            const html = moviesRef.docs.map(movieDoc => {
+                const {url, title, image, quality, year} = movieDoc.data();
+                return `<a class="item" href="${url}">
+                            <span class="top">${quality}</span>
+                            <img src="${image}"/>
+                            <span class="bottom">${title}</span>
+                        </a>`;
+            }).join('\n');
+            moviesDiv.innerHTML = html;
+        });
+    </script>
+</body>
+</html>
